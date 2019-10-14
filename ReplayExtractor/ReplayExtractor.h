@@ -9,12 +9,12 @@
 class ReplayExtractor : public sc2::ReplayObserver
 {
 public:
-	ReplayExtractor(int _maxMins, int _numPlayers, std::string _mapName, std::string _version,
+	ReplayExtractor(int _maxMins, int _minMins, int _numPlayers, std::string _mapName, std::string _version,
 		sc2::Race _playerRace, sc2::Race _opponentRace, int _playerMMR);
 	~ReplayExtractor();
 	std::string TranslateRaceEnum(sc2::Race race); 
 	void OnGameStart(); 
-	//bool IgnoreReplay(const sc2::ReplayInfo& replay_info, uint32_t& player_id);
+	bool IgnoreReplay(const sc2::ReplayInfo& replay_info, uint32_t& player_id);
 	void OnUnitCreated(const sc2::Unit*);
 	void OnUnitDestroyed(const sc2::Unit*);
 	void OnUnitEnterVision(const sc2::Unit*); 
@@ -27,7 +27,7 @@ public:
 
 private: 
 	const sc2::UnitTypes& unit_types = Observation()->GetUnitTypeData();
-	int maxMins, numPlayers, playerMMR;
+	int maxMins, minMins, numPlayers, playerMMR;
 	std::string mapName, version;
 	sc2::Race playerRace, opponentRace;
 	std::vector<std::string> Output; 

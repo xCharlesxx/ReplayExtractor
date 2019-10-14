@@ -1,5 +1,5 @@
 #include "ReplayExtractor.h"
-const char* replayFolder = "A:/ProgramFiles/StarCraft II/Replays/Great/";
+const char* replayFolder = "D:\\OldReplays\\Replays\\";
 
 int main(int argc, char* argv[]) 
 {
@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 
 	coordinator.SetRealtime(false); 
 	//coordinator.AddCommandLine("command"); 
-	//coordinator.SetDataVersion("3.16.1.55958");
-	ReplayExtractor replay_observer(30, 2, "", "", sc2::Race::Zerg, sc2::Race::Terran, 0);
+	coordinator.SetDataVersion("3.16.1.55958");
+	ReplayExtractor replay_observer(20, 3, 2, "", "", sc2::Race::Zerg, sc2::Race::Terran, 0);
 
 	//Impossible to change player perspective at the start of a game
 	coordinator.AddReplayObserver(&replay_observer);
