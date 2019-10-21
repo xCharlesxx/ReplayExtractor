@@ -48,8 +48,20 @@ std::string ReplayExtractor::TranslateRaceEnum(sc2::Race race)
 //Used for sorting replay files
 bool ReplayExtractor::IgnoreReplay(const sc2::ReplayInfo& replayInfo, uint32_t& player_id) 
 {
+	return false;
 	int zergPlayer = 0; 
 	//Check https://github.com/Blizzard/s2client-api/pull/273 request progress
+	if (replayInfo.map_name != "King's Cove LE")
+	{
+		std::cout << "Not valid replay: Map is: " << replayInfo.map_name; 
+		if (DeleteFileA(replayInfo.replay_path.c_str()))
+			std::cout << "FileDeleted" << std::endl;
+		else
+			std::cout << "Error: File not Deleted" << std::endl;
+		return true;
+	}
+
+
 	if (replayInfo.players[0].race == playerRace && replayInfo.players[1].race == opponentRace)
 		zergPlayer = 0; 
 	else if (replayInfo.players[0].race == opponentRace && replayInfo.players[1].race == playerRace)
@@ -61,39 +73,55 @@ bool ReplayExtractor::IgnoreReplay(const sc2::ReplayInfo& replayInfo, uint32_t& 
 
 		std::cout << "Not valid replayselect: Matchup is: " << TranslateRaceEnum(replayInfo.players[0].race_selected) << " vs "
 			<< TranslateRaceEnum(replayInfo.players[1].race_selected) << std::endl;
-		//if (DeleteFileA(replayInfo.replay_path.c_str()))
-		//	std::cout << "FileDeleted" << std::endl;
-		//else
-		//	std::cout << "Error: File not Deleted" << std::endl;
-
+		if (DeleteFileA(replayInfo.replay_path.c_str()))
+			std::cout << "FileDeleted" << std::endl;
+		else
+			std::cout << "Error: File not Deleted" << std::endl;
 		return true;
 	}
 
 	if (replayInfo.duration / 60 > maxMins || replayInfo.duration / 60 < minMins)
 	{
 		std::cout << "Not valid replay: Replay length is: " << replayInfo.duration / 60 << std::endl;
+		if (DeleteFileA(replayInfo.replay_path.c_str()))
+			std::cout << "FileDeleted" << std::endl;
+		else
+			std::cout << "Error: File not Deleted" << std::endl;
 		return true;
 	}
 
 	if (replayInfo.players[numPlayers].player_id != 0)
 	{
-		std::cout << "Not valid replay: Number of players exceeds: " << numPlayers << std::endl; 
+		std::cout << "Not valid replay: Number of players exceeds: " << numPlayers << std::endl;
+		if (DeleteFileA(replayInfo.replay_path.c_str()))
+			std::cout << "FileDeleted" << std::endl;
+		else
+			std::cout << "Error: File not Deleted" << std::endl;
 		return true;
 	}
 	if (replayInfo.players->mmr < 1000)
 	{
 		std::cout << "Not valid replay: MMR: " << replayInfo.players[zergPlayer].mmr << std::endl;
+		if (DeleteFileA(replayInfo.replay_path.c_str()))
+			std::cout << "FileDeleted" << std::endl;
+		else
+			std::cout << "Error: File not Deleted" << std::endl;
 		return true; 
 	}
 
 	stepNum++;
-	std::string dir = "A:/ProgramFiles/StarCraft II/Replays/" + replayInfo.map_name + "/";
+	std::string dir = "D://Games//StarCraft II//Replays//" + replayInfo.map_name + "//";
 	CreateDirectoryA(dir.c_str(), NULL); 
 	std::string path = dir + std::to_string(stepNum) + ".SC2Replay";
 
 	if (!CopyFile(replayInfo.replay_path.c_str(), path.c_str(), true))
 		std::cout << "Error File Already Exists" << std::endl;
 	return true;
+}
+
+void ReplayExtractor::DeleteFileInDir(std::string filepath)
+{
+
 }
 
 void ReplayExtractor::OnGameStart()

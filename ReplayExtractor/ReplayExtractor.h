@@ -15,6 +15,7 @@ public:
 	std::string TranslateRaceEnum(sc2::Race race); 
 	void OnGameStart(); 
 	bool IgnoreReplay(const sc2::ReplayInfo& replay_info, uint32_t& player_id);
+	void DeleteFileInDir(std::string filepath);
 	void OnUnitCreated(const sc2::Unit*);
 	void OnUnitDestroyed(const sc2::Unit*);
 	void OnUnitEnterVision(const sc2::Unit*); 
